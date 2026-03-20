@@ -1,0 +1,126 @@
+import { defineStore } from 'pinia'
+import { ref, computed } from 'vue'
+import { recipesApi, tagsApi } from '@/services/api'
+
+export const useRecipeStore = defineStore('recipes', () => {
+  // --- State ---
+  const recipes = ref([])
+  const currentRecipe = ref(null)
+  const tags = ref([])
+  const loading = ref(false)
+  const error = ref(null)
+
+  // Search / filter state
+  const searchQuery = ref('')
+  const selectedTags = ref([])
+
+  // --- Getters ---
+  const filteredRecipes = computed(() => {
+    let result = recipes.value
+
+    if (searchQuery.value.trim()) {
+      const q = searchQuery.value.toLowerCase()
+      result = result.filter(r =>
+        r.title.toLowerCase().includes(q) ||
+        r.description?.toLowerCase().includes(q)
+      )
+    }
+
+    if (selectedTags.value.length > 0) {
+      result = result.filter(r =>
+        r.tags?.some(t => selectedTags.value.includes(t.name))
+      )
+    }
+
+    return result
+  })
+
+  // --- Actions ---
+  async function fetchRecipes(params = {}) {
+    loading.value = true
+    error.value = null
+    try {
+      recipes.value = await recipesApi.list(params)
+    } catch (e) {
+      error.value = e.message
+    } finally {
+      loading.value = false
+    }
+  }
+
+  async function fetchRecipe(id) {
+    loading.value = true
+    error.value = null
+    try {
+      currentRecipe.value = await recipesApi.get(id)
+    } catch (e) {
+      error.value = e.message
+      currentRecipe.value = null
+    } finally {
+      loading.value = false
+    }
+  }
+
+  async function createRecipe(data) {
+    const recipe = await recipesApi.create(data)
+    recipes.value.unshift(recipe)
+    return recipe
+  }
+
+  async function updateRecipe(id, data) {
+    const updated = await recipesApi.update(id, data)
+    const idx = recipes.value.findIndex(r => r.id === id)
+    if (idx !== -1) recipes.value[idx] = updated
+    if (currentRecipe.value?.id === id) currentRecipe.value = updated
+    return updated
+  }
+
+  async function deleteRecipe(id) {
+    await recipesApi.delete(id)
+    recipes.value = recipes.value.filter(r => r.id !== id)
+    if (currentRecipe.value?.id === id) currentRecipe.value = null
+  }
+
+  async function uploadImage(id, file) {
+    const updated = await recipesApi.uploadImage(id, file)
+    await updateRecipe(id, {})  // triggers local state refresh via return
+    if (currentRecipe.value?.id === id) {
+      currentRecipe.value = { ...currentRecipe.value, image_path: updated.image_path }
+    }
+    return updated
+  }
+
+  async function fetchTags() {
+    tags.value = await tagsApi.list()
+  }
+
+  function setSearch(q) {
+    searchQuery.value = q
+  }
+
+  function toggleTag(tagName) {
+    const idx = selectedTags.value.indexOf(tagName)
+    if (idx === -1) {
+      selectedTags.value.push(tagName)
+    } else {
+      selectedTags.value.splice(idx, 1)
+    }
+  }
+
+  function clearFilters() {
+    searchQuery.value = ''
+    selectedTags.value = []
+  }
+
+  return {
+    // State
+    recipes, currentRecipe, tags, loading, error,
+    searchQuery, selectedTags,
+    // Getters
+    filteredRecipes,
+    // Actions
+    fetchRecipes, fetchRecipe, createRecipe, updateRecipe,
+    deleteRecipe, uploadImage, fetchTags,
+    setSearch, toggleTag, clearFilters,
+  }
+})
