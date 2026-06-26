@@ -1,3 +1,4 @@
+import html
 import httpx
 import ipaddress
 import json
@@ -29,14 +30,23 @@ def parse_servings(servings_raw: str | None) -> float | None:
     return float(match.group(1)) if match else None
 
 
+_UNICODE_FRACTIONS = {
+    '½': '1/2', '¼': '1/4', '¾': '3/4',
+    '⅓': '1/3', '⅔': '2/3',
+    '⅛': '1/8', '⅜': '3/8', '⅝': '5/8', '⅞': '7/8',
+}
+
+
 def parse_ingredient(raw: str) -> IngredientCreate:
     """
     Best-effort parse of an ingredient string into amount, unit, name.
     Falls back to storing the full string as name if parsing fails.
     """
-    raw = raw.strip()
+    raw = html.unescape(raw).strip()
+    for uc, slash in _UNICODE_FRACTIONS.items():
+        raw = raw.replace(uc, slash)
 
-    amount_pattern = r'^(\d+\.?\d*|\d+/\d+)\s*'
+    amount_pattern = r'^(\d+\s+\d+/\d+|\d+/\d+|\d+\.?\d*)\s*'
     units = [
         'cup', 'cups', 'tbsp', 'tsp', 'tablespoon', 'tablespoons',
         'teaspoon', 'teaspoons', 'oz', 'ounce', 'ounces', 'lb', 'lbs',
@@ -44,7 +54,7 @@ def parse_ingredient(raw: str) -> IngredientCreate:
         'liters', 'l', 'pinch', 'pinches', 'clove', 'cloves', 'slice',
         'slices', 'piece', 'pieces', 'can', 'cans', 'bunch', 'bunches',
     ]
-    unit_pattern = r'(' + '|'.join(units) + r')\s*'
+    unit_pattern = r'(' + '|'.join(sorted(units, key=len, reverse=True)) + r')\s*'
 
     amount = None
     unit = None
@@ -53,8 +63,12 @@ def parse_ingredient(raw: str) -> IngredientCreate:
     amount_match = re.match(amount_pattern, raw, re.IGNORECASE)
     if amount_match:
         raw_amount = amount_match.group(1)
-        # handle fractions like 1/2
-        if '/' in raw_amount:
+        if ' ' in raw_amount:
+            # mixed number like "1 1/2"
+            whole, frac = raw_amount.split()
+            num, denom = frac.split('/')
+            amount = float(whole) + float(num) / float(denom)
+        elif '/' in raw_amount:
             num, denom = raw_amount.split('/')
             amount = float(num) / float(denom)
         else:

@@ -68,6 +68,11 @@ Uploaded images are saved to `uploads/` (relative to the process working directo
 
 `vite-plugin-pwa` generates a service worker. `NetworkFirst` caches `/api/recipes`, `CacheFirst` caches `/uploads/` images (30-day TTL). Icons live in `frontend/public/icons/`.
 
+## Planned features
+
+### Edit recipe system
+The user wants to build a full edit recipe flow. Currently `RecipeUpdate` only patches scalar fields (title, description, source URL, times, servings) — ingredients, steps, and tags cannot be modified after creation. The edit system should allow updating all fields including ingredients, steps, and tags.
+
 ### Database migrations
 
 Alembic is configured in `backend/alembic.ini`. The env reads all models via `app.models.recipe.Base.metadata` for autogenerate support. Run Alembic from the `backend/` directory so relative paths resolve correctly.
