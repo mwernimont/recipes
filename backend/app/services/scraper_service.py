@@ -1,6 +1,8 @@
 import httpx
+import ipaddress
 import json
 import re
+from urllib.parse import urlparse
 from bs4 import BeautifulSoup
 from app.schemas.recipe import ScrapeResponse, IngredientCreate, StepCreate
 
@@ -106,8 +108,24 @@ def parse_schema_org(data: dict) -> ScrapeResponse | None:
     )
 
 
+def _validate_scrape_url(url: str) -> None:
+    parsed = urlparse(url)
+    if parsed.scheme not in ("http", "https"):
+        raise ValueError("Only http and https URLs are supported")
+    host = parsed.hostname or ""
+    try:
+        addr = ipaddress.ip_address(host)
+        if not addr.is_global:
+            raise ValueError("Requests to private or reserved addresses are not allowed")
+    except ValueError as e:
+        if "not allowed" in str(e):
+            raise
+        # host is a domain name — allowed
+
+
 async def scrape_recipe(url: str) -> ScrapeResponse:
     """Fetch a URL and attempt to extract recipe data via schema.org JSON-LD."""
+    _validate_scrape_url(url)
     headers = {
         "User-Agent": (
             "Mozilla/5.0 (Windows NT 10.0; Win64; x64) "

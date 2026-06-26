@@ -1,0 +1,10 @@
+{
+  "name": "recipe-vault",
+  "private": true,
+  "scripts": {
+    "dev": "concurrently --names api,ui --prefix-colors blue,green --kill-others-on-fail \"cd backend && uvicorn app.main:app --reload\" \"npm --prefix frontend run dev\""
+  },
+  "devDependencies": {
+    "concurrently": "^9.1.0"
+  }
+}

@@ -21,10 +21,10 @@
     <!-- Times + servings -->
     <section class="section timing">
       <label>Prep (mins)
-        <input v-model.number="form.prep_time" type="number" min="0" />
+        <input v-model.number="form.prep_time_minutes" type="number" min="0" />
       </label>
       <label>Cook (mins)
-        <input v-model.number="form.cook_time" type="number" min="0" />
+        <input v-model.number="form.cook_time_minutes" type="number" min="0" />
       </label>
       <label>Servings
         <input v-model.number="form.servings" type="number" min="1" />
@@ -118,8 +118,8 @@ const form = reactive({
   title: props.recipe.title ?? '',
   description: props.recipe.description ?? '',
   source_url: props.recipe.source_url ?? '',
-  prep_time: props.recipe.prep_time ?? null,
-  cook_time: props.recipe.cook_time ?? null,
+  prep_time_minutes: props.recipe.prep_time_minutes ?? null,
+  cook_time_minutes: props.recipe.cook_time_minutes ?? null,
   servings: props.recipe.servings ?? null,
   ingredients: (props.recipe.ingredients ?? []).map(i => ({ ...i })),
   steps: (props.recipe.steps ?? []).map(s => ({ ...s })),
@@ -138,12 +138,12 @@ function removeIngredient(i) {
 
 // Steps
 function addStep() {
-  form.steps.push({ instruction: '', step_number: form.steps.length + 1 })
+  form.steps.push({ instruction: '', order: form.steps.length + 1 })
 }
 function removeStep(i) {
   form.steps.splice(i, 1)
   // Renumber
-  form.steps.forEach((s, idx) => { s.step_number = idx + 1 })
+  form.steps.forEach((s, idx) => { s.order = idx + 1 })
 }
 
 // Tags

@@ -10,7 +10,7 @@
       <p v-if="recipe.description" class="card-desc">{{ recipe.description }}</p>
 
       <div class="card-meta">
-        <span v-if="recipe.total_time">⏱ {{ recipe.total_time }}m</span>
+        <span v-if="recipe.prep_time_minutes || recipe.cook_time_minutes">⏱ {{ (recipe.prep_time_minutes ?? 0) + (recipe.cook_time_minutes ?? 0) }}m</span>
         <span v-if="recipe.servings">🍴 {{ recipe.servings }}</span>
       </div>
 
@@ -38,7 +38,7 @@ defineEmits(['delete'])
 const imageStyle = computed(() => {
   if (!props.recipe.image_path) return {}
   return {
-    backgroundImage: `url(/uploads/${props.recipe.image_path})`,
+    backgroundImage: `url(${props.recipe.image_path})`,
     backgroundSize: 'cover',
     backgroundPosition: 'center',
   }

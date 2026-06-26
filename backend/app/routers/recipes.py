@@ -55,11 +55,11 @@ def upload_image(
     file: UploadFile = File(...),
     db: Session = Depends(get_db),
 ):
-    allowed_types = {"image/jpeg", "image/png", "image/webp"}
-    if file.content_type not in allowed_types:
+    content_type_ext = {"image/jpeg": "jpg", "image/png": "png", "image/webp": "webp"}
+    if file.content_type not in content_type_ext:
         raise HTTPException(status_code=400, detail="Only JPEG, PNG, and WebP images are allowed")
 
-    ext = file.filename.split(".")[-1].lower()
+    ext = content_type_ext[file.content_type]
     filename = f"{uuid.uuid4()}.{ext}"
     filepath = os.path.join("uploads", filename)
 

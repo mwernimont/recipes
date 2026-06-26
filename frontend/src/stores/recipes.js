@@ -83,10 +83,9 @@ export const useRecipeStore = defineStore('recipes', () => {
 
   async function uploadImage(id, file) {
     const updated = await recipesApi.uploadImage(id, file)
-    await updateRecipe(id, {})  // triggers local state refresh via return
-    if (currentRecipe.value?.id === id) {
-      currentRecipe.value = { ...currentRecipe.value, image_path: updated.image_path }
-    }
+    const idx = recipes.value.findIndex(r => r.id === id)
+    if (idx !== -1) recipes.value[idx] = updated
+    if (currentRecipe.value?.id === id) currentRecipe.value = updated
     return updated
   }
 

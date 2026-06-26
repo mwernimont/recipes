@@ -27,10 +27,10 @@
       <p v-if="recipe.description" class="description">{{ recipe.description }}</p>
 
       <div class="meta-row">
-        <span v-if="recipe.prep_time">⏱ Prep: {{ recipe.prep_time }}m</span>
-        <span v-if="recipe.cook_time">🔥 Cook: {{ recipe.cook_time }}m</span>
-        <span v-if="recipe.prep_time && recipe.cook_time">
-          📋 Total: {{ recipe.prep_time + recipe.cook_time }}m
+        <span v-if="recipe.prep_time_minutes">⏱ Prep: {{ recipe.prep_time_minutes }}m</span>
+        <span v-if="recipe.cook_time_minutes">🔥 Cook: {{ recipe.cook_time_minutes }}m</span>
+        <span v-if="recipe.prep_time_minutes && recipe.cook_time_minutes">
+          📋 Total: {{ recipe.prep_time_minutes + recipe.cook_time_minutes }}m
         </span>
         <a v-if="recipe.source_url" :href="recipe.source_url" target="_blank" class="source-link">
           View Source ↗
@@ -78,8 +78,8 @@
             v-for="step in recipe.steps"
             :key="step.id"
             class="step"
-            :class="{ done: completedSteps.has(step.step_number) }"
-            @click="toggleStep(step.step_number)"
+            :class="{ done: completedSteps.has(step.order) }"
+            @click="toggleStep(step.order)"
           >
             {{ step.instruction }}
           </li>
@@ -178,7 +178,7 @@ function toggleStep(stepNumber) {
 const heroStyle = computed(() => {
   if (!recipe.value?.image_path) return {}
   return {
-    backgroundImage: `url(/uploads/${recipe.value.image_path})`,
+    backgroundImage: `url(${recipe.value.image_path})`,
     backgroundSize: 'cover',
     backgroundPosition: 'center',
   }
