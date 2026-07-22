@@ -134,4 +134,4 @@ def update_recipe_image(db: Session, recipe_id: int, image_path: str) -> Recipe 
 
 
 def get_all_tags(db: Session) -> list[Tag]:
-    return db.query(Tag).order_by(Tag.name).all()
+    return db.query(Tag).filter(Tag.recipes.any()).order_by(Tag.name).all()
