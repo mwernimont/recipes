@@ -41,7 +41,7 @@ Layered: **routers → services → SQLAlchemy ORM → SQLite**.
 - `services/scraper_service.py` — fetches a URL with httpx, parses schema.org JSON-LD (`@type: Recipe`) to extract recipe data
 - `routers/` — thin; delegates to services, maps HTTP errors
 
-`RecipeUpdate` only patches the core scalar fields (title, description, source URL, times, servings). Ingredients, steps, and tags are set at create time only.
+`RecipeUpdate` patches the core scalar fields (title, description, source URL, times, servings) plus optional `ingredients`, `steps`, `tags` — when a collection field is included in the PATCH body it fully replaces the existing collection (empty list clears it); when omitted, that collection is left untouched.
 
 Uploaded images are saved to `uploads/` (relative to the process working directory) and stored in the DB as `/uploads/{uuid}.ext` — the leading slash and prefix are already in the stored value.
 
@@ -51,9 +51,10 @@ Uploaded images are saved to `uploads/` (relative to the process working directo
 
 - `stores/recipes.js` — single Pinia store; holds `recipes[]`, `currentRecipe`, `tags[]`, search/filter state, and all async actions
 - `services/api.js` — thin fetch wrapper; the `request()` function merges headers as `{ 'Content-Type': 'application/json', ...options.headers }` then spreads `...options`, so passing `headers: {}` in options suppresses Content-Type (used for multipart image upload)
-- `router/index.js` — three routes: `/` (LibraryView), `/recipe/:id` (RecipeDetailView), `/add` (AddRecipeView)
+- `router/index.js` — four routes: `/` (LibraryView), `/recipe/:id` (RecipeDetailView), `/recipe/:id/edit` (EditRecipeView), `/add` (AddRecipeView)
 - `views/AddRecipeView.vue` — three-stage flow: `input` → `preview` → `done`; scraping and manual entry both funnel into `RecipePreviewForm`
-- `components/RecipePreviewForm.vue` — editable form for new recipes; emits `save` with the full recipe payload
+- `views/EditRecipeView.vue` — fetches an existing recipe and feeds it into `RecipePreviewForm`; on save, PATCHes via `store.updateRecipe()` and returns to the detail view
+- `components/RecipePreviewForm.vue` — editable form shared by create and edit flows; emits `save` with the full recipe payload. Accepts optional `heading`/`submitLabel` props so the two flows can use different copy
 
 ### Key field-name conventions (easy to confuse)
 
@@ -69,9 +70,6 @@ Uploaded images are saved to `uploads/` (relative to the process working directo
 `vite-plugin-pwa` generates a service worker. `NetworkFirst` caches `/api/recipes`, `CacheFirst` caches `/uploads/` images (30-day TTL). Icons live in `frontend/public/icons/`.
 
 ## Planned features
-
-### Edit recipe system
-The user wants to build a full edit recipe flow. Currently `RecipeUpdate` only patches scalar fields (title, description, source URL, times, servings) — ingredients, steps, and tags cannot be modified after creation. The edit system should allow updating all fields including ingredients, steps, and tags.
 
 ### Database migrations
 

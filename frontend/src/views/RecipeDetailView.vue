@@ -8,6 +8,7 @@
     <div class="detail-header">
       <RouterLink to="/" class="back">← Back</RouterLink>
       <div class="header-actions">
+        <RouterLink :to="`/recipe/${props.id}/edit`" class="btn-edit">Edit</RouterLink>
         <button class="btn-delete" @click="handleDelete">Delete</button>
       </div>
     </div>
@@ -216,6 +217,26 @@ async function handleDelete() {
   color: #16a34a;
   text-decoration: none;
   font-size: 0.9rem;
+}
+
+.header-actions {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.btn-edit {
+  background: none;
+  border: 1px solid #bbf7d0;
+  color: #16a34a;
+  padding: 0.3rem 0.8rem;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 0.85rem;
+  text-decoration: none;
+}
+
+.btn-edit:hover {
+  background: #f0fdf4;
 }
 
 .btn-delete {

@@ -13,6 +13,12 @@ const routes = [
     props: true,
   },
   {
+    path: '/recipe/:id/edit',
+    name: 'EditRecipe',
+    component: () => import('@/views/EditRecipeView.vue'),
+    props: true,
+  },
+  {
     path: '/add',
     name: 'AddRecipe',
     component: () => import('@/views/AddRecipeView.vue'),

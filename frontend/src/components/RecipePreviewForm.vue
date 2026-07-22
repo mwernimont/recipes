@@ -2,31 +2,31 @@
   <div class="preview-form">
     <div class="preview-header">
       <button class="back-btn" @click="$emit('back')">← Back</button>
-      <h1>Review Recipe</h1>
+      <h1>{{ heading }}</h1>
     </div>
 
     <!-- Core fields -->
     <section class="section">
-      <label>Title *
+      <label><span class="label-text">Title *</span>
         <input v-model="form.title" type="text" placeholder="Recipe title" />
       </label>
-      <label>Source URL
+      <label><span class="label-text">Source URL</span>
         <input v-model="form.source_url" type="url" placeholder="https://…" />
       </label>
-      <label>Description
-        <textarea v-model="form.description" rows="3" placeholder="Brief description…" />
+      <label><span class="label-text">Description</span>
+        <textarea v-model="form.description" rows="5" placeholder="Brief description…" />
       </label>
     </section>
 
     <!-- Times + servings -->
     <section class="section timing">
-      <label>Prep (mins)
+      <label><span class="label-text">Prep (mins)</span>
         <input v-model.number="form.prep_time_minutes" type="number" min="0" />
       </label>
-      <label>Cook (mins)
+      <label><span class="label-text">Cook (mins)</span>
         <input v-model.number="form.cook_time_minutes" type="number" min="0" />
       </label>
-      <label>Servings
+      <label><span class="label-text">Servings</span>
         <input v-model.number="form.servings" type="number" min="1" />
       </label>
     </section>
@@ -97,7 +97,7 @@
         :disabled="!form.title.trim() || saving"
         @click="submit"
       >
-        {{ saving ? 'Saving…' : 'Save Recipe' }}
+        {{ saving ? 'Saving…' : submitLabel }}
       </button>
     </div>
   </div>
@@ -109,6 +109,8 @@ import { reactive, ref } from 'vue'
 const props = defineProps({
   recipe: { type: Object, required: true },
   saving: Boolean,
+  heading: { type: String, default: 'Review Recipe' },
+  submitLabel: { type: String, default: 'Save Recipe' },
 })
 
 const emit = defineEmits(['save', 'back'])
@@ -160,3 +162,37 @@ function submit() {
   emit('save', { ...form })
 }
 </script>
+<style scoped>
+.section{
+  display:flex;
+  flex-direction: column;
+  flex-wrap: wrap;
+}
+
+label{
+  margin-bottom: 10px;
+  flex: 1;
+  display: grid;
+  grid-template-columns: 85px 1fr;
+  align-items: center;
+  gap: 10px;
+}
+
+.label-text{
+  flex-shrink: 0;
+}
+
+input, textarea{
+  width: 100%;
+  max-width: 100%;
+  padding: 5px;
+}
+
+.ingredient-row, .step-row{
+  display: flex;
+  gap: 10px;
+  margin-top: 10px;
+  align-items: center;
+}
+
+</style>

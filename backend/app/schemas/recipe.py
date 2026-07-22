@@ -81,6 +81,9 @@ class RecipeUpdate(BaseModel):
     prep_time_minutes: Optional[int] = None
     cook_time_minutes: Optional[int] = None
     servings: Optional[float] = None
+    ingredients: Optional[list[IngredientCreate]] = None
+    steps: Optional[list[StepCreate]] = None
+    tags: Optional[list[str]] = None
 
 
 class RecipeResponse(RecipeBase):

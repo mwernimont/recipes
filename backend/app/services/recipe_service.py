@@ -82,8 +82,32 @@ def update_recipe(db: Session, recipe_id: int, data: RecipeUpdate) -> Recipe | N
     if not recipe:
         return None
 
-    for field, value in data.model_dump(exclude_unset=True).items():
+    update_data = data.model_dump(exclude_unset=True)
+
+    ingredients_data = update_data.pop("ingredients", None)
+    steps_data = update_data.pop("steps", None)
+    tags_data = update_data.pop("tags", None)
+
+    for field, value in update_data.items():
         setattr(recipe, field, value)
+
+    if ingredients_data is not None:
+        recipe.ingredients = [
+            Ingredient(
+                name=ing["name"], amount=ing["amount"],
+                unit=ing["unit"], notes=ing["notes"],
+            )
+            for ing in ingredients_data
+        ]
+
+    if steps_data is not None:
+        recipe.steps = [
+            Step(order=step["order"], instruction=step["instruction"])
+            for step in steps_data
+        ]
+
+    if tags_data is not None:
+        recipe.tags = [get_or_create_tag(db, tag_name) for tag_name in tags_data]
 
     db.commit()
     db.refresh(recipe)
