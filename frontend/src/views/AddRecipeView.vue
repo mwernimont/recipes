@@ -91,3 +91,6 @@ function emptyRecipe() {
   }
 }
 </script>
+<style scoped>
+
+</style>

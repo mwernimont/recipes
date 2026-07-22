@@ -40,3 +40,12 @@ function submit() {
   if (url.value.trim()) emit('scrape', url.value.trim())
 }
 </script>
+<style scoped>
+.url-row{
+  display: flex;
+}
+.url-row input{
+  flex: 1;
+  padding: 5px 10px;
+}
+</style>
