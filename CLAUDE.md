@@ -71,6 +71,13 @@ Uploaded images are saved to `uploads/` (relative to the process working directo
 
 ## Planned features
 
+### Weekly meal planner
+The user wants a planner that assigns recipes from the library to days of the week. Scope as discussed:
+- Assign recipes to days (calendar/grid view over the library, not just a flat list).
+- Auto-generate a shopping list by aggregating ingredients across the week's planned recipes, respecting each recipe's servings scaling (see the scaling logic already in `RecipeDetailView.vue`).
+- Persist plans so they can be reused/copied across weeks, rather than being ephemeral client-only state (implies new backend models/endpoints, not just frontend state).
+- Iterative regeneration with accept/deny per slot: the user can accept or deny individual recipe assignments; regenerating the plan only swaps out denied slots for new suggestions and leaves accepted ones locked in place. The recipe-selection/suggestion algorithm for what fills a slot (random, tag-based, avoid-recent-repeats, etc.) is still an open design question to resolve when this is scoped for implementation.
+
 ### Database migrations
 
 Alembic is configured in `backend/alembic.ini`. The env reads all models via `app.models.recipe.Base.metadata` for autogenerate support. Run Alembic from the `backend/` directory so relative paths resolve correctly.
