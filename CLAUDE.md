@@ -56,6 +56,10 @@ Uploaded images are saved to `uploads/` (relative to the process working directo
 - `views/EditRecipeView.vue` — fetches an existing recipe and feeds it into `RecipePreviewForm`; on save, PATCHes via `store.updateRecipe()` and returns to the detail view
 - `components/RecipePreviewForm.vue` — editable form shared by create and edit flows; emits `save` with the full recipe payload. Accepts optional `heading`/`submitLabel` props so the two flows can use different copy
 
+### Styling
+
+Component `<style>` blocks use `lang="scss"`. `frontend/src/styles/_variables.scss` (colors, spacing, radii, shadows) and `_mixins.scss` (`button-variant`, `card`, `tag-pill`, `outline-button`, `state-message`) are auto-injected into every component via `vite.config.js`'s `css.preprocessorOptions.scss.additionalData` — don't add `@use` imports for them in individual components. Prefer an existing variable/mixin over a new hardcoded value; if a needed shade doesn't exist, add it to `_variables.scss` rather than hardcoding, and never reach for `!important` — fix selector specificity instead (e.g. nest with `&` under the more specific parent rule).
+
 ### Key field-name conventions (easy to confuse)
 
 | Concept | Correct name | Wrong (don't use) |
