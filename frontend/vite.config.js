@@ -3,6 +3,8 @@ import vue from '@vitejs/plugin-vue'
 import { VitePWA } from 'vite-plugin-pwa'
 import { fileURLToPath, URL } from 'node:url'
 
+const stylesDir = fileURLToPath(new URL('./src/styles', import.meta.url))
+
 export default defineConfig({
   plugins: [
     vue(),
@@ -69,6 +71,13 @@ export default defineConfig({
   resolve: {
     alias: {
       '@': fileURLToPath(new URL('./src', import.meta.url)),
+    },
+  },
+  css: {
+    preprocessorOptions: {
+      scss: {
+        additionalData: `@use "${stylesDir}/variables" as *; @use "${stylesDir}/mixins" as *;`,
+      },
     },
   },
   server: {

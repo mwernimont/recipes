@@ -1,0 +1,61 @@
+@use 'variables' as *;
+
+@mixin button-base {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 600;
+  border: none;
+  border-radius: $radius-md;
+  cursor: pointer;
+  transition: background-color 0.15s ease;
+}
+
+@mixin button-variant($bg, $bg-hover, $color: white) {
+  @include button-base;
+  background: $bg;
+  color: $color;
+
+  &:hover {
+    background: $bg-hover;
+  }
+}
+
+@mixin card {
+  background: $color-bg;
+  border: 1px solid $color-border;
+  border-radius: $radius-lg;
+}
+
+@mixin tag-pill($color: $color-primary, $bg: $color-primary-light, $border: $color-primary-border) {
+  font-size: 0.75rem;
+  padding: 0.2rem 0.6rem;
+  background: $bg;
+  color: $color;
+  border-radius: 999px;
+  border: 1px solid $border;
+}
+
+@mixin outline-button($color, $border, $hover-bg) {
+  background: none;
+  border: 1px solid $border;
+  color: $color;
+  padding: 0.3rem 0.8rem;
+  border-radius: $radius-md;
+  cursor: pointer;
+  font-size: 0.85rem;
+
+  &:hover {
+    background: $hover-bg;
+  }
+}
+
+@mixin state-message {
+  text-align: center;
+  padding: 3rem 0;
+  color: $color-text-muted;
+
+  &.error {
+    color: $color-danger;
+  }
+}

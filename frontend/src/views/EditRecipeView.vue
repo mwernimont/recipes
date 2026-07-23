@@ -43,11 +43,8 @@ function handleBack() {
 }
 </script>
 
-<style scoped>
+<style lang="scss" scoped>
 .state-msg {
-  text-align: center;
-  padding: 3rem 0;
-  color: #6b7280;
+  @include state-message;
 }
-.state-msg.error { color: #dc2626; }
 </style>

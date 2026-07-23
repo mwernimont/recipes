@@ -15,17 +15,17 @@
 import { RouterLink, RouterView } from 'vue-router'
 </script>
 
-<style scoped>
+<style lang="scss" scoped>
 .nav {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 0 1.5rem;
+  padding: 0 $space-lg;
   height: 56px;
-  border-bottom: 1px solid #e5e7eb;
+  border-bottom: 1px solid $color-border;
   position: sticky;
   top: 0;
-  background: white;
+  background: $color-bg;
   z-index: 100;
 }
 
@@ -37,22 +37,15 @@ import { RouterLink, RouterView } from 'vue-router'
 }
 
 .nav-add {
+  @include button-variant($color-primary, $color-primary-dark);
   font-size: 0.9rem;
-  font-weight: 600;
   text-decoration: none;
-  background: #16a34a;
-  color: white;
   padding: 0.4rem 1rem;
-  border-radius: 6px;
-}
-
-.nav-add:hover {
-  background: #15803d;
 }
 
 .main-content {
   max-width: 860px;
   margin: 0 auto;
-  padding: 2rem 1.5rem;
+  padding: $space-xl $space-lg;
 }
 </style>

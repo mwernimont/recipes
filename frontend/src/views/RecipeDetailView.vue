@@ -198,13 +198,10 @@ async function handleDelete() {
 }
 </script>
 
-<style scoped>
+<style lang="scss" scoped>
 .state-msg {
-  text-align: center;
-  padding: 3rem 0;
-  color: #6b7280;
+  @include state-message;
 }
-.state-msg.error { color: #dc2626; }
 
 .detail-header {
   display: flex;
@@ -214,7 +211,7 @@ async function handleDelete() {
 }
 
 .back {
-  color: #16a34a;
+  color: $color-primary;
   text-decoration: none;
   font-size: 0.9rem;
 }
@@ -225,38 +222,18 @@ async function handleDelete() {
 }
 
 .btn-edit {
-  background: none;
-  border: 1px solid #bbf7d0;
-  color: #16a34a;
-  padding: 0.3rem 0.8rem;
-  border-radius: 6px;
-  cursor: pointer;
-  font-size: 0.85rem;
+  @include outline-button($color-primary, $color-primary-border, $color-primary-light);
   text-decoration: none;
 }
 
-.btn-edit:hover {
-  background: #f0fdf4;
-}
-
 .btn-delete {
-  background: none;
-  border: 1px solid #fca5a5;
-  color: #dc2626;
-  padding: 0.3rem 0.8rem;
-  border-radius: 6px;
-  cursor: pointer;
-  font-size: 0.85rem;
-}
-
-.btn-delete:hover {
-  background: #fef2f2;
+  @include outline-button($color-danger, $color-danger-border, $color-danger-light);
 }
 
 .hero {
   position: relative;
   height: 280px;
-  background: #f3f4f6;
+  background: $color-bg-subtle;
   border-radius: 12px;
   display: flex;
   align-items: center;
@@ -265,47 +242,62 @@ async function handleDelete() {
   overflow: hidden;
 }
 
-.hero-placeholder { font-size: 4rem; }
+.hero-placeholder {
+  font-size: 4rem;
+}
 
 .image-upload-btn {
   position: absolute;
   bottom: 0.75rem;
   right: 0.75rem;
-  background: rgba(0,0,0,0.45);
+  background: rgba(0, 0, 0, 0.45);
   color: white;
-  border-radius: 6px;
+  border-radius: $radius-md;
   padding: 0.3rem 0.6rem;
   cursor: pointer;
   font-size: 1rem;
 }
 
-.hidden { display: none; }
+.hidden {
+  display: none;
+}
 
-.detail-body { display: flex; flex-direction: column; gap: 1rem; }
+.detail-body {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
 
-h1 { margin: 0; font-size: 1.75rem; }
+h1 {
+  margin: 0;
+  font-size: 1.75rem;
+}
 
-.description { color: #4b5563; margin: 0; }
+.description {
+  color: $color-body;
+  margin: 0;
+}
 
 .meta-row {
   display: flex;
   flex-wrap: wrap;
   gap: 1rem;
   font-size: 0.875rem;
-  color: #6b7280;
+  color: $color-text-muted;
 }
 
-.source-link { color: #16a34a; }
+.source-link {
+  color: $color-primary;
+}
 
-.tags-row { display: flex; flex-wrap: wrap; gap: 0.4rem; }
+.tags-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+}
 
 .tag {
-  font-size: 0.75rem;
-  padding: 0.2rem 0.6rem;
-  background: #f0fdf4;
-  color: #16a34a;
-  border-radius: 999px;
-  border: 1px solid #bbf7d0;
+  @include tag-pill;
 }
 
 /* Scaler */
@@ -314,12 +306,15 @@ h1 { margin: 0; font-size: 1.75rem; }
   align-items: center;
   gap: 1rem;
   padding: 0.75rem 1rem;
-  background: #f9fafb;
+  background: $color-bg-muted;
   border-radius: 8px;
-  border: 1px solid #e5e7eb;
+  border: 1px solid $color-border;
 }
 
-.scaler label { font-weight: 600; font-size: 0.9rem; }
+.scaler label {
+  font-weight: 600;
+  font-size: 0.9rem;
+}
 
 .scaler-controls {
   display: flex;
@@ -331,17 +326,29 @@ h1 { margin: 0; font-size: 1.75rem; }
   width: 30px;
   height: 30px;
   border-radius: 50%;
-  border: 1px solid #d1d5db;
-  background: white;
+  border: 1px solid $color-border-strong;
+  background: $color-bg;
   font-size: 1.1rem;
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
   line-height: 1;
-}
 
-.scaler-controls button:disabled { opacity: 0.35; cursor: default; }
+  &:disabled {
+    opacity: 0.35;
+    cursor: default;
+  }
+
+  &.reset-btn {
+    width: auto;
+    height: auto;
+    font-size: 0.75rem;
+    border-radius: $radius-md;
+    padding: 0.2rem 0.5rem;
+    color: $color-text-muted;
+  }
+}
 
 .servings-display {
   font-size: 1.1rem;
@@ -350,18 +357,16 @@ h1 { margin: 0; font-size: 1.75rem; }
   text-align: center;
 }
 
-.reset-btn {
-  font-size: 0.75rem !important;
-  width: auto !important;
-  height: auto !important;
-  border-radius: 6px !important;
-  padding: 0.2rem 0.5rem;
-  color: #6b7280;
-}
-
 /* Ingredients */
-.section { display: flex; flex-direction: column; gap: 0.6rem; }
-.section h2 { font-size: 1.15rem; margin: 0; }
+.section {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+.section h2 {
+  font-size: 1.15rem;
+  margin: 0;
+}
 
 .ingredients-list {
   list-style: none;
@@ -377,16 +382,18 @@ h1 { margin: 0; font-size: 1.75rem; }
   gap: 0.5rem;
   font-size: 0.95rem;
   padding: 0.4rem 0;
-  border-bottom: 1px solid #f3f4f6;
+  border-bottom: 1px solid $color-bg-subtle;
 }
 
 .ing-amount {
   min-width: 80px;
-  color: #374151;
+  color: $color-heading;
   font-weight: 500;
 }
 
-.ing-name { color: #4b5563; }
+.ing-name {
+  color: $color-body;
+}
 
 /* Steps */
 .steps-list {
@@ -400,17 +407,19 @@ h1 { margin: 0; font-size: 1.75rem; }
 .step {
   font-size: 0.95rem;
   line-height: 1.6;
-  color: #374151;
+  color: $color-heading;
   cursor: pointer;
   padding: 0.5rem 0.25rem;
-  border-radius: 4px;
+  border-radius: $radius-sm;
   transition: all 0.15s;
 }
 
-.step:hover { background: #f9fafb; }
+.step:hover {
+  background: $color-bg-muted;
+}
 
 .step.done {
-  color: #9ca3af;
+  color: $color-text-subtle;
   text-decoration: line-through;
 }
 </style>

@@ -162,14 +162,14 @@ function submit() {
   emit('save', { ...form })
 }
 </script>
-<style scoped>
-.section{
-  display:flex;
+<style lang="scss" scoped>
+.section {
+  display: flex;
   flex-direction: column;
   flex-wrap: wrap;
 }
 
-label{
+label {
   margin-bottom: 10px;
   flex: 1;
   display: grid;
@@ -178,21 +178,26 @@ label{
   gap: 10px;
 }
 
-.label-text{
+.label-text {
   flex-shrink: 0;
 }
 
-input, textarea{
+input,
+textarea {
   width: 100%;
   max-width: 100%;
   padding: 5px;
 }
 
-.ingredient-row, .step-row{
+.ingredient-row,
+.step-row {
   display: flex;
   gap: 10px;
   margin-top: 10px;
   align-items: center;
 }
 
+.tag {
+  @include tag-pill;
+}
 </style>

@@ -45,13 +45,13 @@ const imageStyle = computed(() => {
 })
 </script>
 
-<style scoped>
+<style lang="scss" scoped>
 .card {
   position: relative;
   display: flex;
   flex-direction: column;
-  border: 1px solid #e5e7eb;
-  border-radius: 10px;
+  border: 1px solid $color-border;
+  border-radius: $radius-lg;
   overflow: hidden;
   text-decoration: none;
   color: inherit;
@@ -59,12 +59,12 @@ const imageStyle = computed(() => {
 }
 
 .card:hover {
-  box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+  box-shadow: $shadow-md;
 }
 
 .card-image {
   height: 160px;
-  background: #f3f4f6;
+  background: $color-bg-subtle;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -91,7 +91,7 @@ const imageStyle = computed(() => {
 
 .card-desc {
   font-size: 0.82rem;
-  color: #6b7280;
+  color: $color-text-muted;
   margin: 0;
   display: -webkit-box;
   -webkit-line-clamp: 2;
@@ -103,7 +103,7 @@ const imageStyle = computed(() => {
   display: flex;
   gap: 0.75rem;
   font-size: 0.78rem;
-  color: #6b7280;
+  color: $color-text-muted;
 }
 
 .card-tags {
@@ -114,12 +114,9 @@ const imageStyle = computed(() => {
 }
 
 .tag {
+  @include tag-pill;
   font-size: 0.72rem;
   padding: 0.15rem 0.5rem;
-  background: #f0fdf4;
-  color: #16a34a;
-  border-radius: 999px;
-  border: 1px solid #bbf7d0;
 }
 
 .card-delete {
@@ -130,7 +127,7 @@ const imageStyle = computed(() => {
   height: 24px;
   border-radius: 50%;
   border: none;
-  background: rgba(0,0,0,0.35);
+  background: rgba(0, 0, 0, 0.35);
   color: white;
   font-size: 0.7rem;
   cursor: pointer;

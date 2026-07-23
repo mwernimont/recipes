@@ -86,7 +86,7 @@ async function handleDelete(id) {
 }
 </script>
 
-<style scoped>
+<style lang="scss" scoped>
 .library-header {
   display: flex;
   align-items: baseline;
@@ -96,7 +96,7 @@ async function handleDelete(id) {
 
 .recipe-count {
   font-size: 0.9rem;
-  color: #6b7280;
+  color: $color-text-muted;
 }
 
 .controls {
@@ -110,15 +110,15 @@ async function handleDelete(id) {
   width: 100%;
   padding: 0.6rem 0.9rem;
   font-size: 1rem;
-  border: 1px solid #d1d5db;
+  border: 1px solid $color-border-strong;
   border-radius: 8px;
   outline: none;
   box-sizing: border-box;
 }
 
 .search-input:focus {
-  border-color: #16a34a;
-  box-shadow: 0 0 0 2px #bbf7d0;
+  border-color: $color-primary;
+  box-shadow: 0 0 0 2px $color-primary-border;
 }
 
 .tag-filters {
@@ -131,16 +131,16 @@ async function handleDelete(id) {
   font-size: 0.8rem;
   padding: 0.25rem 0.75rem;
   border-radius: 999px;
-  border: 1px solid #d1d5db;
-  background: white;
+  border: 1px solid $color-border-strong;
+  background: $color-bg;
   cursor: pointer;
   transition: all 0.15s;
 }
 
 .tag-filter.active {
-  background: #16a34a;
+  background: $color-primary;
   color: white;
-  border-color: #16a34a;
+  border-color: $color-primary;
 }
 
 .tag-clear {
@@ -149,7 +149,7 @@ async function handleDelete(id) {
   border-radius: 999px;
   border: 1px solid transparent;
   background: none;
-  color: #6b7280;
+  color: $color-text-muted;
   cursor: pointer;
   text-decoration: underline;
 }
@@ -161,23 +161,18 @@ async function handleDelete(id) {
 }
 
 .state-msg {
-  text-align: center;
-  padding: 3rem 0;
-  color: #6b7280;
-}
-
-.state-msg.error {
-  color: #dc2626;
+  @include state-message;
 }
 
 .empty {
   text-align: center;
   padding: 3rem 0;
-  color: #6b7280;
+  color: $color-text-muted;
 }
 
-.empty a, .empty button {
-  color: #16a34a;
+.empty a,
+.empty button {
+  color: $color-primary;
   background: none;
   border: none;
   cursor: pointer;
