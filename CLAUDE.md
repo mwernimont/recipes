@@ -51,10 +51,12 @@ Uploaded images are saved to `uploads/` (relative to the process working directo
 
 - `stores/recipes.js` — single Pinia store; holds `recipes[]`, `currentRecipe`, `tags[]`, search/filter state, and all async actions
 - `services/api.js` — thin fetch wrapper; the `request()` function merges headers as `{ 'Content-Type': 'application/json', ...options.headers }` then spreads `...options`, so passing `headers: {}` in options suppresses Content-Type (used for multipart image upload)
-- `router/index.js` — four routes: `/` (LibraryView), `/recipe/:id` (RecipeDetailView), `/recipe/:id/edit` (EditRecipeView), `/add` (AddRecipeView)
+- `router/index.js` — five routes: `/` (LibraryView), `/recipe/:id` (RecipeDetailView), `/recipe/:id/edit` (EditRecipeView), `/add` (AddRecipeView), `/meal-plan` (MealPlanView)
 - `views/AddRecipeView.vue` — three-stage flow: `input` → `preview` → `done`; scraping and manual entry both funnel into `RecipePreviewForm`
 - `views/EditRecipeView.vue` — fetches an existing recipe and feeds it into `RecipePreviewForm`; on save, PATCHes via `store.updateRecipe()` and returns to the detail view
 - `components/RecipePreviewForm.vue` — editable form shared by create and edit flows; emits `save` with the full recipe payload. Accepts optional `heading`/`submitLabel` props so the two flows can use different copy
+- `views/MealPlanView.vue` — meal plan builder (see "Weekly meal planner" below); all its state (meal count, accepted list, suggestion batch, deny cooldown, search) is local component state, not in the Pinia store, since it's ephemeral and single-view
+- `components/MealPlanCard.vue` — recipe card used by `MealPlanView`; a `variant` prop (`'suggestion'` | `'accepted'`) switches the footer between accept/deny controls and a remove button. Not the same component as `RecipeCard.vue`, whose root is a `RouterLink` that always navigates and so can't host action buttons
 
 ### Styling
 
@@ -76,11 +78,15 @@ Component `<style>` blocks use `lang="scss"`. `frontend/src/styles/_variables.sc
 ## Planned features
 
 ### Weekly meal planner
-The user wants a planner that assigns recipes from the library to days of the week. Scope as discussed:
-- Assign recipes to days (calendar/grid view over the library, not just a flat list).
+The user wants a planner that assigns recipes from the library to days of the week, built incrementally in slices.
+
+**Slice 1 — done** (`MealPlanView.vue` + `MealPlanCard.vue`, reachable via the "Meal Plan" nav link): pick a meal count (1–7), then build a set of that many accepted recipes by either searching the library by title or requesting random suggestions (`Help me plan` / `Show me more recipes`) that you accept or deny per card. Denying doesn't reshuffle immediately — it just marks the card; clicking the batch button puts marked cards on a 3-pull cooldown (tracked in a local `Map<recipeId, pullsRemaining>`) and fully refreshes the suggestion batch for whatever slots are still open. Everything is client-side/ephemeral — no backend model or persistence yet, since `store.recipes` already holds the full library.
+
+**Still planned, not yet scoped for implementation:**
+- Assign the accepted recipes to specific days (calendar/grid view), rather than stopping at an unordered set.
 - Auto-generate a shopping list by aggregating ingredients across the week's planned recipes, respecting each recipe's servings scaling (see the scaling logic already in `RecipeDetailView.vue`).
-- Persist plans so they can be reused/copied across weeks, rather than being ephemeral client-only state (implies new backend models/endpoints, not just frontend state).
-- Iterative regeneration with accept/deny per slot: the user can accept or deny individual recipe assignments; regenerating the plan only swaps out denied slots for new suggestions and leaves accepted ones locked in place. The recipe-selection/suggestion algorithm for what fills a slot (random, tag-based, avoid-recent-repeats, etc.) is still an open design question to resolve when this is scoped for implementation.
+- Persist plans so they can be reused/copied across weeks (implies new backend models/endpoints — deliberately deferred out of slice 1).
+- Tag-based suggestion filtering/avoidance (e.g. excluding desserts) — raised during design but explicitly cut from slice 1.
 
 ### Database migrations
 

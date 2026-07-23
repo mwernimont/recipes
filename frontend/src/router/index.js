@@ -23,6 +23,11 @@ const routes = [
     name: 'AddRecipe',
     component: () => import('@/views/AddRecipeView.vue'),
   },
+  {
+    path: '/meal-plan',
+    name: 'MealPlan',
+    component: () => import('@/views/MealPlanView.vue'),
+  },
 ]
 
 export default createRouter({

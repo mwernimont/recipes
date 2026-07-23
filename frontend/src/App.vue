@@ -2,7 +2,10 @@
   <div id="app">
     <header class="nav">
       <RouterLink to="/" class="nav-logo">🗄️ Recipe Vault</RouterLink>
-      <RouterLink to="/add" class="nav-add">+ Add Recipe</RouterLink>
+      <div class="nav-actions">
+        <RouterLink to="/meal-plan" class="nav-add">Meal Plan</RouterLink>
+        <RouterLink to="/add" class="nav-add">+ Add Recipe</RouterLink>
+      </div>
     </header>
 
     <main class="main-content">
@@ -34,6 +37,11 @@ import { RouterLink, RouterView } from 'vue-router'
   font-size: 1.1rem;
   text-decoration: none;
   color: inherit;
+}
+
+.nav-actions {
+  display: flex;
+  gap: $space-sm;
 }
 
 .nav-add {
