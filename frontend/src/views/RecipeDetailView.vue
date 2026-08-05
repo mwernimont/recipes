@@ -134,7 +134,11 @@ const scaledIngredients = computed(() => {
 // Step completion toggle
 function toggleStep(stepNumber) {
   const s = new Set(completedSteps.value)
-  s.has(stepNumber) ? s.delete(stepNumber) : s.add(stepNumber)
+  if (s.has(stepNumber)) {
+    s.delete(stepNumber)
+  } else {
+    s.add(stepNumber)
+  }
   completedSteps.value = s
 }
 
