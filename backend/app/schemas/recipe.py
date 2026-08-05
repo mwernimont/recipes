@@ -69,6 +69,7 @@ class RecipeBase(BaseModel):
 
 
 class RecipeCreate(RecipeBase):
+    servings: Optional[float] = None
     ingredients: list[IngredientCreate] = []
     steps: list[StepCreate] = []
     tags: list[str] = []

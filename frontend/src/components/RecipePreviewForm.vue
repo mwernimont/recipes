@@ -99,6 +99,7 @@
       >
         {{ saving ? 'Saving…' : submitLabel }}
       </button>
+      <p v-if="error" class="error">{{ error }}</p>
     </div>
   </div>
 </template>
@@ -109,6 +110,7 @@ import { reactive, ref } from 'vue'
 const props = defineProps({
   recipe: { type: Object, required: true },
   saving: Boolean,
+  error: String,
   heading: { type: String, default: 'Review Recipe' },
   submitLabel: { type: String, default: 'Save Recipe' },
 })
@@ -199,5 +201,9 @@ textarea {
 
 .tag {
   @include tag-pill;
+}
+
+.error {
+  color: $color-danger;
 }
 </style>

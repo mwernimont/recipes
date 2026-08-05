@@ -20,7 +20,7 @@ def create_recipe(db: Session, data: RecipeCreate) -> Recipe:
         source_url=data.source_url,
         prep_time_minutes=data.prep_time_minutes,
         cook_time_minutes=data.cook_time_minutes,
-        servings=data.servings,
+        servings=data.servings if data.servings is not None else 4.0,
     )
     db.add(recipe)
     db.flush()  # get recipe.id before adding children
@@ -87,6 +87,9 @@ def update_recipe(db: Session, recipe_id: int, data: RecipeUpdate) -> Recipe | N
     ingredients_data = update_data.pop("ingredients", None)
     steps_data = update_data.pop("steps", None)
     tags_data = update_data.pop("tags", None)
+
+    if update_data.get("servings") is None:
+        update_data.pop("servings", None)
 
     for field, value in update_data.items():
         setattr(recipe, field, value)

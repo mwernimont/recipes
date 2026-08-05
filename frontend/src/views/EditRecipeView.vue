@@ -5,6 +5,7 @@
     v-else-if="store.currentRecipe"
     :recipe="store.currentRecipe"
     :saving="saving"
+    :error="saveError"
     heading="Edit Recipe"
     submit-label="Save Changes"
     @save="handleSave"
@@ -25,14 +26,18 @@ const props = defineProps({
 const store = useRecipeStore()
 const router = useRouter()
 const saving = ref(false)
+const saveError = ref(null)
 
 onMounted(() => store.fetchRecipe(props.id))
 
 async function handleSave(recipeData) {
   saving.value = true
+  saveError.value = null
   try {
     await store.updateRecipe(props.id, recipeData)
     router.push(`/recipe/${props.id}`)
+  } catch (e) {
+    saveError.value = e.message ?? 'Could not save changes.'
   } finally {
     saving.value = false
   }

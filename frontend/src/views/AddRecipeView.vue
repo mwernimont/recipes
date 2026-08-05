@@ -12,6 +12,7 @@
       v-else-if="stage === 'preview'"
       :recipe="draft"
       :saving="saving"
+      :error="saveError"
       @save="handleSave"
       @back="resetToInput"
     />
@@ -40,6 +41,7 @@ const scraping = ref(false)
 const scrapeError = ref(null)
 const saving = ref(false)
 const savedId = ref(null)
+const saveError = ref(null)
 
 async function handleScrape(url) {
   scraping.value = true
@@ -61,10 +63,13 @@ function handleManual() {
 
 async function handleSave(recipeData) {
   saving.value = true
+  saveError.value = null
   try {
     const saved = await store.createRecipe(recipeData)
     savedId.value = saved.id
     stage.value = 'done'
+  } catch (e) {
+    saveError.value = e.message ?? 'Could not save that recipe.'
   } finally {
     saving.value = false
   }
@@ -74,6 +79,7 @@ function resetToInput() {
   stage.value = 'input'
   draft.value = null
   scrapeError.value = null
+  saveError.value = null
   savedId.value = null
 }
 
