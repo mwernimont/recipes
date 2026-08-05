@@ -28,6 +28,22 @@ const routes = [
     name: 'MealPlan',
     component: () => import('@/views/MealPlanView.vue'),
   },
+  {
+    path: '/grocery-list',
+    name: 'GroceryList',
+    component: () => import('@/views/GroceryListView.vue'),
+  },
+  {
+    path: '/archive',
+    name: 'Archive',
+    component: () => import('@/views/ArchiveView.vue'),
+  },
+  {
+    path: '/archive/:id',
+    name: 'ArchiveDetail',
+    component: () => import('@/views/ArchiveDetailView.vue'),
+    props: true,
+  },
 ]
 
 export default createRouter({

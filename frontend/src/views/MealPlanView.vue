@@ -1,5 +1,5 @@
 <template>
-  <div v-if="store.loading" class="state-msg">Loading…</div>
+  <div v-if="mealPlanStore.loading || store.loading" class="state-msg">Loading…</div>
   <div v-else-if="store.error" class="state-msg error">{{ store.error }}</div>
 
   <div v-else-if="stage === 'count'" class="count-picker">
@@ -31,6 +31,10 @@
 
     <div v-if="isPlanComplete" class="ready-state">
       <p>✅ Your plan is ready!</p>
+      <button class="accept-btn" :disabled="accepting" @click="acceptPlan">
+        {{ accepting ? 'Saving…' : 'Accept Plan →' }}
+      </button>
+      <p v-if="acceptError" class="error">{{ acceptError }}</p>
     </div>
 
     <template v-else>
@@ -76,10 +80,14 @@
 
 <script setup>
 import { ref, computed, onMounted } from 'vue'
+import { useRouter } from 'vue-router'
 import { useRecipeStore } from '@/stores/recipes'
+import { useMealPlanStore } from '@/stores/mealPlan'
 import MealPlanCard from '@/components/MealPlanCard.vue'
 
 const store = useRecipeStore()
+const mealPlanStore = useMealPlanStore()
+const router = useRouter()
 
 const stage = ref('count') // 'count' | 'plan'
 const mealCount = ref(null)
@@ -89,8 +97,18 @@ const deniedIds = ref(new Set())
 const cooldown = ref(new Map())
 const hasGeneratedOnce = ref(false)
 const searchInput = ref('')
+const accepting = ref(false)
+const acceptError = ref(null)
 
 onMounted(async () => {
+  // Only one meal plan can be active at a time - if one's already in
+  // progress, there's nothing to build here until it's finished.
+  await mealPlanStore.fetchActiveMealPlan()
+  if (mealPlanStore.activeMealPlan) {
+    router.push('/grocery-list')
+    return
+  }
+
   await store.fetchRecipes()
 })
 
@@ -160,6 +178,19 @@ function toggleDeny(id) {
 
 function removeAccepted(id) {
   accepted.value = accepted.value.filter(r => r.id !== id)
+}
+
+async function acceptPlan() {
+  accepting.value = true
+  acceptError.value = null
+  try {
+    await mealPlanStore.createMealPlan(accepted.value.map(r => r.id))
+    router.push('/grocery-list')
+  } catch (e) {
+    acceptError.value = e.message ?? 'Could not create the meal plan.'
+  } finally {
+    accepting.value = false
+  }
 }
 
 function startOver() {
@@ -249,6 +280,20 @@ function startOver() {
   padding: 2rem 0;
   font-size: 1.1rem;
   font-weight: 600;
+}
+
+.accept-btn {
+  @include button-variant($color-primary, $color-primary-dark);
+  margin-top: 1rem;
+  padding: 0.6rem 1.5rem;
+  font-size: 1rem;
+}
+
+.ready-state .error {
+  margin-top: 0.75rem;
+  font-size: 0.9rem;
+  font-weight: normal;
+  color: $color-danger;
 }
 
 .search-section {

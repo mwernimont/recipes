@@ -23,6 +23,7 @@ if config.config_file_name is not None:
 # from myapp import mymodel
 # target_metadata = mymodel.Base.metadata
 from app.models.recipe import Base
+from app.models import meal_plan  # noqa: F401 - registers its tables on Base.metadata
 target_metadata = Base.metadata
 
 # other values from the config, defined by the needs of env.py,

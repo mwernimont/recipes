@@ -3,7 +3,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 import os
 
-from app.routers import recipes, scraper, tags
+from app.routers import recipes, scraper, tags, meal_plans
 
 app = FastAPI(
     title="Recipe Vault",
@@ -31,6 +31,7 @@ app.mount("/uploads", StaticFiles(directory="uploads"), name="uploads")
 app.include_router(recipes.router, prefix="/api/recipes", tags=["recipes"])
 app.include_router(scraper.router, prefix="/api/scraper", tags=["scraper"])
 app.include_router(tags.router, prefix="/api/tags", tags=["tags"])
+app.include_router(meal_plans.router, prefix="/api/meal-plans", tags=["meal-plans"])
 
 
 @app.get("/api/health")

@@ -13,7 +13,9 @@ async function request(path, options = {}) {
   const data = await res.json()
 
   if (!res.ok) {
-    throw new Error(data.detail ?? `Request failed: ${res.status}`)
+    const err = new Error(data.detail ?? `Request failed: ${res.status}`)
+    err.status = res.status
+    throw err
   }
 
   return data
@@ -56,4 +58,26 @@ export const scraperApi = {
 
 export const tagsApi = {
   list: () => request('/tags/'),
+}
+
+export const mealPlansApi = {
+  create: (recipeIds) => request('/meal-plans/', {
+    method: 'POST',
+    body: JSON.stringify({ recipe_ids: recipeIds }),
+  }),
+  getActive: () => request('/meal-plans/active'),
+  get: (id) => request(`/meal-plans/${id}`),
+  list: (params = {}) => {
+    const q = new URLSearchParams(params).toString()
+    return request(`/meal-plans/${q ? `?${q}` : ''}`)
+  },
+  complete: (id) => request(`/meal-plans/${id}/complete`, { method: 'POST' }),
+  cancel: (id) => request(`/meal-plans/${id}/cancel`, { method: 'POST' }),
+  checkItem: (itemId, isChecked) => request(`/meal-plans/items/${itemId}`, {
+    method: 'PATCH',
+    body: JSON.stringify({ is_checked: isChecked }),
+  }),
+  deleteItem: (itemId) => request(`/meal-plans/items/${itemId}`, {
+    method: 'DELETE',
+  }),
 }

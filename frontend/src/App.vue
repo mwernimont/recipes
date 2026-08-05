@@ -3,7 +3,9 @@
     <header class="nav">
       <RouterLink to="/" class="nav-logo">🗄️ Recipe Vault</RouterLink>
       <div class="nav-actions">
+        <RouterLink v-if="mealPlanStore.activeMealPlan" to="/grocery-list" class="nav-add">Grocery List</RouterLink>
         <RouterLink to="/meal-plan" class="nav-add">Meal Plan</RouterLink>
+        <RouterLink to="/archive" class="nav-link">Archive</RouterLink>
         <RouterLink to="/add" class="nav-add">+ Add Recipe</RouterLink>
       </div>
     </header>
@@ -15,7 +17,15 @@
 </template>
 
 <script setup>
+import { onMounted } from 'vue'
 import { RouterLink, RouterView } from 'vue-router'
+import { useMealPlanStore } from '@/stores/mealPlan'
+
+const mealPlanStore = useMealPlanStore()
+
+onMounted(() => {
+  mealPlanStore.fetchActiveMealPlan()
+})
 </script>
 
 <style lang="scss" scoped>
@@ -49,6 +59,19 @@ import { RouterLink, RouterView } from 'vue-router'
   font-size: 0.9rem;
   text-decoration: none;
   padding: 0.4rem 1rem;
+}
+
+.nav-link {
+  display: inline-flex;
+  align-items: center;
+  color: $color-text-muted;
+  font-size: 0.9rem;
+  text-decoration: none;
+  padding: 0.4rem 0.5rem;
+}
+
+.nav-link:hover {
+  color: $color-text;
 }
 
 .main-content {
