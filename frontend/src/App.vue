@@ -4,9 +4,9 @@
       <RouterLink to="/" class="nav-logo">🗄️ Recipe Vault</RouterLink>
       <div class="nav-actions">
         <RouterLink v-if="mealPlanStore.activeMealPlan" to="/grocery-list" class="nav-add">Grocery List</RouterLink>
-        <RouterLink to="/meal-plan" class="nav-add">Meal Plan</RouterLink>
-        <RouterLink to="/archive" class="nav-link">Archive</RouterLink>
         <RouterLink to="/add" class="nav-add">+ Add Recipe</RouterLink>
+        <RouterLink to="/meal-plan" class="nav-add">Meal Plan</RouterLink>
+        <RouterLink to="/archive" class="nav-archive">Archive</RouterLink>
       </div>
     </header>
 
@@ -61,17 +61,14 @@ onMounted(() => {
   padding: 0.4rem 1rem;
 }
 
-.nav-link {
+.nav-archive {
+  @include outline-button($color-text-muted, $color-border-strong, $color-bg-subtle);
   display: inline-flex;
   align-items: center;
-  color: $color-text-muted;
   font-size: 0.9rem;
+  font-weight: 600;
+  padding: 0.4rem 1rem;
   text-decoration: none;
-  padding: 0.4rem 0.5rem;
-}
-
-.nav-link:hover {
-  color: $color-text;
 }
 
 .main-content {
