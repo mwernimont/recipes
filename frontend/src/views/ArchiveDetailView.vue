@@ -5,13 +5,18 @@
   <div v-else-if="plan" class="archive-detail">
     <RouterLink to="/archive" class="back-link">← Back to archive</RouterLink>
 
+    <p v-if="actionError" class="action-error">{{ actionError }}</p>
+
     <div class="list-header">
       <div>
         <h1>Grocery List</h1>
         <span class="plan-date">{{ formatDate(plan.created_at) }}</span>
         <span class="plan-status" :class="plan.status">{{ capitalize(plan.status) }}</span>
       </div>
-      <span class="recipe-count">{{ plan.recipes.length }} recipes</span>
+      <div class="header-actions">
+        <span class="recipe-count">{{ plan.recipes.length }} recipes</span>
+        <button class="delete-btn" @click="handleDelete">Delete Plan</button>
+      </div>
     </div>
 
     <GroceryListSection
@@ -25,7 +30,7 @@
 
 <script setup>
 import { ref, onMounted } from 'vue'
-import { RouterLink } from 'vue-router'
+import { useRouter, RouterLink } from 'vue-router'
 import { mealPlansApi } from '@/services/api'
 import { capitalize } from '@/utils/capitalize'
 import GroceryListSection from '@/components/GroceryListSection.vue'
@@ -34,9 +39,12 @@ const props = defineProps({
   id: { type: String, required: true },
 })
 
+const router = useRouter()
+
 const plan = ref(null)
 const loading = ref(true)
 const error = ref(null)
+const actionError = ref(null)
 
 onMounted(async () => {
   try {
@@ -47,6 +55,18 @@ onMounted(async () => {
     loading.value = false
   }
 })
+
+async function handleDelete() {
+  if (!confirm(`Delete this meal plan from ${formatDate(plan.value.created_at)}? This can't be undone.`)) return
+
+  actionError.value = null
+  try {
+    await mealPlansApi.delete(plan.value.id)
+    router.push('/archive')
+  } catch (e) {
+    actionError.value = e.message ?? 'Could not delete that meal plan.'
+  }
+}
 
 function formatDate(iso) {
   return new Date(iso).toLocaleDateString(undefined, {
@@ -70,6 +90,12 @@ function formatDate(iso) {
 
 .back-link:hover {
   text-decoration: underline;
+}
+
+.action-error {
+  color: $color-danger;
+  font-size: 0.9rem;
+  margin-bottom: 1.5rem;
 }
 
 .list-header {
@@ -98,8 +124,18 @@ function formatDate(iso) {
   @include tag-pill($color-danger, $color-danger-light, $color-danger-border);
 }
 
+.header-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
 .recipe-count {
   font-size: 0.9rem;
   color: $color-text-muted;
+}
+
+.delete-btn {
+  @include outline-button($color-danger, $color-danger-border, $color-danger-light);
 }
 </style>

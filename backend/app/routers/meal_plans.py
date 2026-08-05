@@ -64,6 +64,16 @@ def cancel_meal_plan(meal_plan_id: int, db: Session = Depends(get_db)):
     return meal_plan
 
 
+@router.delete("/{meal_plan_id}", status_code=204)
+def delete_meal_plan(meal_plan_id: int, db: Session = Depends(get_db)):
+    try:
+        deleted = meal_plan_service.delete_meal_plan(db, meal_plan_id)
+    except ValueError:
+        raise HTTPException(status_code=409, detail="Cannot delete an active meal plan - cancel or complete it first")
+    if not deleted:
+        raise HTTPException(status_code=404, detail="Meal plan not found")
+
+
 @router.patch("/items/{item_id}", response_model=GroceryListItemResponse)
 def update_item(item_id: int, data: GroceryListItemUpdate, db: Session = Depends(get_db)):
     item = meal_plan_service.set_item_checked(db, item_id, data.is_checked)

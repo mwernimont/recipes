@@ -73,6 +73,7 @@ export const mealPlansApi = {
   },
   complete: (id) => request(`/meal-plans/${id}/complete`, { method: 'POST' }),
   cancel: (id) => request(`/meal-plans/${id}/cancel`, { method: 'POST' }),
+  delete: (id) => request(`/meal-plans/${id}`, { method: 'DELETE' }),
   checkItem: (itemId, isChecked) => request(`/meal-plans/items/${itemId}`, {
     method: 'PATCH',
     body: JSON.stringify({ is_checked: isChecked }),

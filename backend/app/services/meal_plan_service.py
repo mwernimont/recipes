@@ -92,6 +92,17 @@ def delete_item(db: Session, item_id: int) -> bool:
     return True
 
 
+def delete_meal_plan(db: Session, meal_plan_id: int) -> bool:
+    meal_plan = get_meal_plan(db, meal_plan_id)
+    if not meal_plan:
+        return False
+    if meal_plan.status == "active":
+        raise ValueError("Cannot delete an active meal plan")
+    db.delete(meal_plan)
+    db.commit()
+    return True
+
+
 def end_meal_plan(db: Session, meal_plan_id: int, status: str) -> MealPlan | None:
     """Move an active plan to a terminal status ('completed' or 'cancelled')."""
     meal_plan = get_meal_plan(db, meal_plan_id)

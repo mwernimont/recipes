@@ -5,6 +5,8 @@
   <div v-else class="archive">
     <h1>Meal Plan Archive</h1>
 
+    <p v-if="actionError" class="action-error">{{ actionError }}</p>
+
     <p v-if="plans.length === 0" class="empty-note">
       No past meal plans yet. Plans show up here once you complete or cancel them.
     </p>
@@ -14,7 +16,10 @@
         <RouterLink :to="`/archive/${plan.id}`" class="plan-card">
           <div class="plan-card-header">
             <span class="plan-date">{{ formatDate(plan.created_at) }}</span>
-            <span class="plan-status" :class="plan.status">{{ capitalize(plan.status) }}</span>
+            <div class="plan-card-actions">
+              <span class="plan-status" :class="plan.status">{{ capitalize(plan.status) }}</span>
+              <button class="remove-btn" title="Delete" @click.prevent="handleDelete(plan)">✕</button>
+            </div>
           </div>
           <p class="plan-recipes">{{ recipeTitles(plan) }}</p>
         </RouterLink>
@@ -32,6 +37,7 @@ import { capitalize } from '@/utils/capitalize'
 const plans = ref([])
 const loading = ref(true)
 const error = ref(null)
+const actionError = ref(null)
 
 onMounted(async () => {
   try {
@@ -43,6 +49,18 @@ onMounted(async () => {
     loading.value = false
   }
 })
+
+async function handleDelete(plan) {
+  if (!confirm(`Delete this meal plan from ${formatDate(plan.created_at)}? This can't be undone.`)) return
+
+  actionError.value = null
+  try {
+    await mealPlansApi.delete(plan.id)
+    plans.value = plans.value.filter(p => p.id !== plan.id)
+  } catch (e) {
+    actionError.value = e.message ?? 'Could not delete that meal plan.'
+  }
+}
 
 function recipeTitles(plan) {
   return plan.recipes.map(r => r.recipe_title).join(', ')
@@ -66,6 +84,12 @@ function formatDate(iso) {
 
 .empty-note {
   color: $color-text-muted;
+}
+
+.action-error {
+  color: $color-danger;
+  font-size: 0.9rem;
+  margin-bottom: 1.5rem;
 }
 
 .plan-list {
@@ -99,6 +123,25 @@ function formatDate(iso) {
 
 .plan-date {
   font-weight: 600;
+}
+
+.plan-card-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.remove-btn {
+  background: none;
+  border: none;
+  color: $color-text-muted;
+  cursor: pointer;
+  font-size: 0.9rem;
+  padding: 0.15rem 0.4rem;
+}
+
+.remove-btn:hover {
+  color: $color-danger;
 }
 
 .plan-status {
