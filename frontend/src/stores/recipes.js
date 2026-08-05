@@ -1,18 +1,16 @@
 import { defineStore } from 'pinia'
 import { ref, computed } from 'vue'
-import { recipesApi, tagsApi } from '@/services/api'
+import { recipesApi } from '@/services/api'
 
 export const useRecipeStore = defineStore('recipes', () => {
   // --- State ---
   const recipes = ref([])
   const currentRecipe = ref(null)
-  const tags = ref([])
   const loading = ref(false)
   const error = ref(null)
 
   // Search / filter state
   const searchQuery = ref('')
-  const selectedTags = ref([])
 
   // --- Getters ---
   const filteredRecipes = computed(() => {
@@ -23,12 +21,6 @@ export const useRecipeStore = defineStore('recipes', () => {
       result = result.filter(r =>
         r.title.toLowerCase().includes(q) ||
         r.description?.toLowerCase().includes(q)
-      )
-    }
-
-    if (selectedTags.value.length > 0) {
-      result = result.filter(r =>
-        r.tags?.some(t => selectedTags.value.includes(t.name))
       )
     }
 
@@ -89,37 +81,23 @@ export const useRecipeStore = defineStore('recipes', () => {
     return updated
   }
 
-  async function fetchTags() {
-    tags.value = await tagsApi.list()
-  }
-
   function setSearch(q) {
     searchQuery.value = q
   }
 
-  function toggleTag(tagName) {
-    const idx = selectedTags.value.indexOf(tagName)
-    if (idx === -1) {
-      selectedTags.value.push(tagName)
-    } else {
-      selectedTags.value.splice(idx, 1)
-    }
-  }
-
   function clearFilters() {
     searchQuery.value = ''
-    selectedTags.value = []
   }
 
   return {
     // State
-    recipes, currentRecipe, tags, loading, error,
-    searchQuery, selectedTags,
+    recipes, currentRecipe, loading, error,
+    searchQuery,
     // Getters
     filteredRecipes,
     // Actions
     fetchRecipes, fetchRecipe, createRecipe, updateRecipe,
-    deleteRecipe, uploadImage, fetchTags,
-    setSearch, toggleTag, clearFilters,
+    deleteRecipe, uploadImage,
+    setSearch, clearFilters,
   }
 })

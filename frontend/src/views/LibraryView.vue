@@ -14,25 +14,6 @@
         class="search-input"
         @input="store.setSearch(searchInput)"
       />
-
-      <div v-if="store.tags.length" class="tag-filters">
-        <button
-          v-for="tag in store.tags"
-          :key="tag.name"
-          class="tag-filter"
-          :class="{ active: store.selectedTags.includes(tag.name) }"
-          @click="store.toggleTag(tag.name)"
-        >
-          {{ tag.name }}
-        </button>
-        <button
-          v-if="store.selectedTags.length"
-          class="tag-clear"
-          @click="store.clearFilters"
-        >
-          Clear
-        </button>
-      </div>
     </div>
 
     <!-- Loading -->
@@ -43,7 +24,7 @@
 
     <!-- Empty state -->
     <div v-else-if="filteredRecipes.length === 0" class="empty">
-      <p v-if="store.searchQuery || store.selectedTags.length">
+      <p v-if="store.searchQuery">
         No recipes match your search.
         <button @click="store.clearFilters">Clear filters</button>
       </p>
@@ -76,7 +57,7 @@ const searchInput = ref(store.searchQuery)
 const filteredRecipes = computed(() => store.filteredRecipes)
 
 onMounted(async () => {
-  await Promise.all([store.fetchRecipes(), store.fetchTags()])
+  await store.fetchRecipes()
 })
 
 async function handleDelete(id) {
@@ -119,39 +100,6 @@ async function handleDelete(id) {
 .search-input:focus {
   border-color: $color-primary;
   box-shadow: 0 0 0 2px $color-primary-border;
-}
-
-.tag-filters {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.5rem;
-}
-
-.tag-filter {
-  font-size: 0.8rem;
-  padding: 0.25rem 0.75rem;
-  border-radius: 999px;
-  border: 1px solid $color-border-strong;
-  background: $color-bg;
-  cursor: pointer;
-  transition: all 0.15s;
-}
-
-.tag-filter.active {
-  background: $color-primary;
-  color: white;
-  border-color: $color-primary;
-}
-
-.tag-clear {
-  font-size: 0.8rem;
-  padding: 0.25rem 0.75rem;
-  border-radius: 999px;
-  border: 1px solid transparent;
-  background: none;
-  color: $color-text-muted;
-  cursor: pointer;
-  text-decoration: underline;
 }
 
 .recipe-grid {
